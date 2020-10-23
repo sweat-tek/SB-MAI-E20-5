@@ -79,43 +79,54 @@ public class SVGImageFigure extends SVGAttributedFigure implements SVGFigure, Im
     @Override
     @FeatureEntryPoint(JHotDrawFeatures.IMAGE_TOOL)
     public void draw(Graphics2D g) {
-        //super.draw(g);
-
         double opacity = OPACITY.get(this);
-        opacity = Math.min(Math.max(0d, opacity), 1d);
         if (opacity != 0d) {
             Composite savedComposite = g.getComposite();
-            if (opacity != 1d) {
-                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) opacity));
-            }
-
+            checkOpacity(opacity, g);
             BufferedImage image = getBufferedImage();
             if (image != null) {
                 if (TRANSFORM.get(this) != null) {
-                    // FIXME - We should cache the transformed image.
-                    //         Drawing a transformed image appears to be very slow.
-                    Graphics2D gx = (Graphics2D) g.create();
-                    
-                    // Use same rendering hints like parent graphics
-                    gx.setRenderingHints(g.getRenderingHints());
-                    
-                    gx.transform(TRANSFORM.get(this));
-                    gx.drawImage(image, (int) rectangle.x, (int) rectangle.y, (int) rectangle.width, (int) rectangle.height, null);
-                    gx.dispose();
+                    createGraphics(g, image);
                 } else {
                     g.drawImage(image, (int) rectangle.x, (int) rectangle.y, (int) rectangle.width, (int) rectangle.height, null);
                 }
             } else {
-                Shape shape = getTransformedShape();
-                g.setColor(Color.red);
-                g.setStroke(new BasicStroke());
-                g.draw(shape);
+                settingGraphicShape(g);
             }
-
-            if (opacity != 1d) {
-                g.setComposite(savedComposite);
-            }
+            checkOpacity(opacity, g, savedComposite);
         }
+    }
+
+    private void checkOpacity(double opacity, Graphics2D g, Composite savedComposite) {
+        if (opacity != 1d) {
+            g.setComposite(savedComposite);
+        }
+    }
+
+    private void checkOpacity(double opacity, Graphics2D g) {
+        if (opacity != 1d) {
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) opacity));
+        }
+    }
+
+    private void settingGraphicShape(Graphics2D g) {
+        Shape shape = getTransformedShape();
+        g.setColor(Color.red);
+        g.setStroke(new BasicStroke());
+        g.draw(shape);
+    }
+
+    private void createGraphics(Graphics2D g, BufferedImage image) {
+        // FIXME - We should cache the transformed image.
+        //         Drawing a transformed image appears to be very slow.
+        Graphics2D gx = (Graphics2D) g.create();
+        
+        // Use same rendering hints like parent graphics
+        gx.setRenderingHints(g.getRenderingHints());
+        
+        gx.transform(TRANSFORM.get(this));
+        gx.drawImage(image, (int) rectangle.x, (int) rectangle.y, (int) rectangle.width, (int) rectangle.height, null);
+        gx.dispose();
     }
 
     protected void drawFill(Graphics2D g) {
