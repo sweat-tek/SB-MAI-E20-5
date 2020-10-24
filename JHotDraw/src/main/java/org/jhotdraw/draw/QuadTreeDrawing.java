@@ -257,6 +257,7 @@ public class QuadTreeDrawing extends AbstractDrawing {
         }
     }
 
+    
     @Override
     @FeatureEntryPoint(JHotDrawFeatures.ARRANGE)
     public void sendToBack(Figure figure) {

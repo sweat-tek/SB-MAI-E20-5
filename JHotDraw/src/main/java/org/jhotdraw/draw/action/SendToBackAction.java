@@ -11,7 +11,6 @@
  * accordance with the license agreement you entered into with  
  * the copyright holders. For details see accompanying license terms. 
  */
-
 package org.jhotdraw.draw.action;
 
 import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
@@ -25,43 +24,57 @@ import org.jhotdraw.draw.*;
 /**
  * SendToBackAction.
  *
- * @author  Werner Randelshofer
- * @version 2.0 2008-05-30 Renamed from MoveToBackAction to SendToBackAction
- * for consistency with the API of Drawing.
- * <br>1.0 24. November 2003  Created.
+ * @author Werner Randelshofer
+ * @version 2.0 2008-05-30 Renamed from MoveToBackAction to SendToBackAction for
+ * consistency with the API of Drawing.
+ * <br>1.0 24. November 2003 Created.
  */
 public class SendToBackAction extends AbstractSelectedAction {
-    
-       public static String ID = "edit.sendToBack";
-    /** Creates a new instance. */
+
+    public static String ID = "edit.sendToBack";
+
+    /**
+     * Creates a new instance.
+     */
     public SendToBackAction(DrawingEditor editor) {
         super(editor);
         labels.configureAction(this, ID);
     }
 
     @FeatureEntryPoint(JHotDrawFeatures.ARRANGE)
+    @Override
     public void actionPerformed(java.awt.event.ActionEvent e) {
         final DrawingView view = getView();
         final LinkedList<Figure> figures = new LinkedList<Figure>(view.getSelectedFigures());
         sendToBack(view, figures);
-        fireUndoableEditHappened(new AbstractUndoableEdit() {
+        fireUndoableEditHappened(setupUndoableEditOverrides(view, figures));
+
+    }
+
+    public AbstractUndoableEdit setupUndoableEditOverrides(DrawingView view, Collection figures) {
+        AbstractUndoableEdit undoableEdit = new AbstractUndoableEdit() {
             @Override
             public String getPresentationName() {
-       return labels.getTextProperty(ID);
+                System.out.println("Undoable Edit from send to back, label: " + ID + " " + labels.getTextProperty(ID));
+                return labels.getTextProperty(ID);
             }
+
             @Override
             public void redo() throws CannotRedoException {
                 super.redo();
                 SendToBackAction.sendToBack(view, figures);
             }
+
             @Override
             public void undo() throws CannotUndoException {
                 super.undo();
-                BringToFrontAction.bringToFront(view, figures);
+                SendToFrontAction.sendToFront(view, figures);
             }
-        }
-        );
+        };
+         
+         return undoableEdit;
     }
+
     public static void sendToBack(DrawingView view, Collection figures) {
         Iterator i = figures.iterator();
         Drawing drawing = view.getDrawing();
