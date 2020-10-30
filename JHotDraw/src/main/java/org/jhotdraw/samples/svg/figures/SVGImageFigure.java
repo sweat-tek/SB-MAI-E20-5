@@ -82,7 +82,7 @@ public class SVGImageFigure extends SVGAttributedFigure implements SVGFigure, Im
         double opacity = OPACITY.get(this);
         if (opacity != 0d) {
             Composite savedComposite = g.getComposite();
-            checkOpacity(opacity, g);
+            checkAndSetComposite(opacity, g);
             BufferedImage image = getBufferedImage();
             if (image != null) {
                 if (TRANSFORM.get(this) != null) {
@@ -93,17 +93,17 @@ public class SVGImageFigure extends SVGAttributedFigure implements SVGFigure, Im
             } else {
                 settingGraphicShape(g);
             }
-            checkOpacity(opacity, g, savedComposite);
+            SVGImageFigure.this.checkAndSetComposite(opacity, g, savedComposite);
         }
     }
 
-    private void checkOpacity(double opacity, Graphics2D g, Composite savedComposite) {
+    private void checkAndSetComposite(double opacity, Graphics2D g, Composite savedComposite) {
         if (opacity != 1d) {
             g.setComposite(savedComposite);
         }
     }
 
-    private void checkOpacity(double opacity, Graphics2D g) {
+    private void checkAndSetComposite(double opacity, Graphics2D g) {
         if (opacity != 1d) {
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) opacity));
         }
