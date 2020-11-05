@@ -248,7 +248,7 @@ public class DefaultSDIApplication extends AbstractApplication {
     @FeatureEntryPoint(JHotDrawFeatures.MANAGE_DRAWINGS)
     public void dispose(View p) {
         super.dispose(p);
-        if (views().size() == 0) {
+        if (views().isEmpty()) {
             stop();
         }
     }
