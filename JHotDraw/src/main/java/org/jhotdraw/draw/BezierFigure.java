@@ -132,27 +132,23 @@ public class BezierFigure extends AbstractAttributedFigure {
     
     protected void drawCaps(Graphics2D g) {
         if (getNodeCount() > 1) {
-            if (START_DECORATION.get(this) != null) {
-                BezierPath cp = getCappedPath();
-                Point2D.Double p1 = path.get(0,0);
-                Point2D.Double p2 = cp.get(0,0);
-                if (p2.equals(p1)) {
-                    p2 = path.get(1,0);
-                }
-                START_DECORATION.get(this).draw(g, this, p1, p2);
-            }
-            if (END_DECORATION.get(this) != null) {
-                BezierPath cp = getCappedPath();
-                Point2D.Double p1 = path.get(path.size()-1,0);
-                Point2D.Double p2 = cp.get(path.size()-1,0);
-                if (p2.equals(p1)) {
-                    p2 = path.get(path.size()-2,0);
-                }
-                END_DECORATION.get(this).draw(g, this, p1, p2);
-            }
+            drawCap(g, START_DECORATION, 0, 1);
+            drawCap(g, END_DECORATION, path.size()-1, path.size()-2);
         }
     }
-    
+
+    private void drawCap(Graphics2D g, AttributeKey<LineDecoration> startDecoration, int i, int i2) {
+        if (startDecoration.get(this) != null) {
+            BezierPath cp = getCappedPath();
+            Point2D.Double p1 = path.get(i, 0);
+            Point2D.Double p2 = cp.get(i, 0);
+            if (p2.equals(p1)) {
+                p2 = path.get(i2, 0);
+            }
+            startDecoration.get(this).draw(g, this, p1, p2);
+        }
+    }
+
     protected void drawFill(Graphics2D g) {
         if (isClosed() || FILL_OPEN_PATH.get(this)) {
             double grow = AttributeKeys.getPerpendicularFillGrowth(this);
@@ -167,7 +163,8 @@ public class BezierFigure extends AbstractAttributedFigure {
             }
         }
     }
-    
+
+    //TODO: Pick up from here
     public boolean contains(Point2D.Double p) {
         double tolerance = Math.max(2f, AttributeKeys.getStrokeTotalWidth(this) / 2d);
         if (isClosed() || FILL_COLOR.get(this) != null && FILL_OPEN_PATH.get(this)) {
@@ -187,31 +184,39 @@ public class BezierFigure extends AbstractAttributedFigure {
                 }
             }
         }
-        if (! isClosed()) {
+        if (!isClosed()) {
             if (getCappedPath().outlineContains(p, tolerance)) {
                 return true;
             }
-            if (START_DECORATION.get(this) != null) {
-                BezierPath cp = getCappedPath();
-                Point2D.Double p1 = path.get(0,0);
-                Point2D.Double p2 = cp.get(0,0);
-                // FIXME - Check here, if caps path contains the point
-                if (Geom.lineContainsPoint(p1.x,p1.y,p2.x,p2.y, p.x, p.y, tolerance)) {
-                    return true;
-                }
-            }
-            if (END_DECORATION.get(this) != null) {
-                BezierPath cp = getCappedPath();
-                Point2D.Double p1 = path.get(path.size()-1,0);
-                Point2D.Double p2 = cp.get(path.size()-1,0);
-                // FIXME - Check here, if caps path contains the point
-                if (Geom.lineContainsPoint(p1.x,p1.y,p2.x,p2.y, p.x, p.y, tolerance)) {
-                    return true;
-                }
-            }
+            if (containsIfStartDecorator(p, tolerance)) return true;
+             Boolean returnValue = containsIfStopDecorator(p, tolerance);
+             if (returnValue != null) return returnValue;
         }
         return false;
     }
+
+    private Boolean containsIfStopDecorator(Point2D.Double p, double tolerance){
+        if (END_DECORATION.get(this) != null) {
+            BezierPath cp = getCappedPath();
+            Point2D.Double p1 = path.get(path.size()-1,0);
+            Point2D.Double p2 = cp.get(path.size()-1,0);
+            // FIXME - Check here, if caps path contains the point
+            return Geom.lineContainsPoint(p1.x, p1.y, p2.x, p2.y, p.x, p.y, tolerance);
+        }
+        return null;
+    }
+
+    private boolean containsIfStartDecorator(Point2D.Double p, double tolerance) {
+        if (START_DECORATION.get(this) != null) {
+            BezierPath cp = getCappedPath();
+            Point2D.Double p1 = path.get(0,0);
+            Point2D.Double p2 = cp.get(0,0);
+            // FIXME - Check here, if caps path contains the point
+            return Geom.lineContainsPoint(p1.x, p1.y, p2.x, p2.y, p.x, p.y, tolerance);
+        }
+        return false;
+    }
+
     /**
      * Checks if this figure can be connected. By default
      * filled BezierFigures can be connected.
