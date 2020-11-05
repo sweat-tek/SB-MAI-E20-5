@@ -48,7 +48,6 @@ public class SVGPathFigure extends AbstractAttributedCompositeFigure implements 
      * This cachedPath is used for drawing.
      */
     private transient GeneralPath cachedPath;
-   // private transient Rectangle2D.Double cachedDrawingArea;
     /**
      * This is used to perform faster hit testing.
      */
@@ -168,8 +167,6 @@ public class SVGPathFigure extends AbstractAttributedCompositeFigure implements 
         return cachedHitShape;
     }
 
-    
-    // int count;
     public Rectangle2D.Double getDrawingArea() {
         if (cachedDrawingArea == null) {
             double strokeTotalWidth = AttributeKeys.getStrokeTotalWidth(this);
@@ -214,35 +211,36 @@ public class SVGPathFigure extends AbstractAttributedCompositeFigure implements 
             }
         }
         boolean isClosed = CLOSED.get(getChild(0));
+        double tolerance = Math.max(2f, AttributeKeys.getStrokeTotalWidth(this) / 2d);
+        Boolean sReturn = containsIfClosedOrUncoloredShape(p, isClosed);
+        if (sReturn != null) return sReturn;
+        return Shapes.outlineContains(getPath(), p, tolerance);
+    }
+
+    private Boolean containsIfClosedOrUncoloredShape(Point2D.Double p, boolean isClosed){
         if (isClosed && FILL_COLOR.get(this) == null && FILL_GRADIENT.get(this)==null) {
             return getHitShape().contains(p);
         }
-        /*
-        return cachedPath.contains(p2);
-         */
-        double tolerance = Math.max(2f, AttributeKeys.getStrokeTotalWidth(this) / 2d);
         if (isClosed || FILL_COLOR.get(this) != null || FILL_GRADIENT.get(this)!=null) {
             if (getPath().contains(p)) {
                 return true;
             }
-            double grow = AttributeKeys.getPerpendicularHitGrowth(this) /** 2d*/;
-            GrowStroke gs = new GrowStroke((float) grow,
-                    (float) (AttributeKeys.getStrokeTotalWidth(this) *
-                    STROKE_MITER_LIMIT.get(this)));
-            if (gs.createStrokedShape(getPath()).contains(p)) {
-                return true;
-            } else {
-                if (isClosed) {
-                    return false;
-                }
-            }
+            return containsIfStrokeGrows(p, isClosed);
         }
-        if (!isClosed) {
-            if (Shapes.outlineContains(getPath(), p, tolerance)) {
-                return true;
-            }
+        return null;
+    }
+
+    private Boolean containsIfStrokeGrows(Point2D.Double p, boolean isClosed) {
+        double grow = AttributeKeys.getPerpendicularHitGrowth(this);
+        GrowStroke gs = new GrowStroke((float) grow,
+                (float) (AttributeKeys.getStrokeTotalWidth(this) *
+                STROKE_MITER_LIMIT.get(this)));
+        if (gs.createStrokedShape(getPath()).contains(p)) {
+            return true;
+        } else if (isClosed) {
+                return false;
         }
-        return false;
+        return null;
     }
 
     public void setBounds(Point2D.Double anchor, Point2D.Double lead) {
@@ -360,18 +358,27 @@ public class SVGPathFigure extends AbstractAttributedCompositeFigure implements 
             actions.add(new RemoveTransformAction(labels));
             actions.add(new FlattenTransformAction(labels));
         }
+        getPathOpenCloseAction(labels, actions);
+        getWindingRuleAction(labels, actions);
+        return actions;
+    }
+
+    private void getPathOpenCloseAction(ResourceBundleUtil labels, LinkedList<Action> actions) {
         if (CLOSED.get(getChild(getChildCount() - 1))) {
             actions.add(new OpenPathAction(labels));
         } else {
             actions.add(new ClosePathAction(labels));
         }
+    }
+
+    private void getWindingRuleAction(ResourceBundleUtil labels, LinkedList<Action> actions) {
         if (WINDING_RULE.get(this) != WindingRule.EVEN_ODD) {
             actions.add(new WindingEvenOddAction(labels));
         } else {
             actions.add(new WindingNonZeroAction(labels));
         }
-        return actions;
     }
+
     // CONNECTING
     public boolean canConnect() {
         return false; // SVG does not support connecting
@@ -463,8 +470,6 @@ public class SVGPathFigure extends AbstractAttributedCompositeFigure implements 
         }
 
         public void actionPerformed(ActionEvent evt) {
-            // CompositeEdit edit = new CompositeEdit(labels.getString("flattenTransform"));
-            //TransformEdit edit = new TransformEdit(SVGPathFigure.this, )
             final Object restoreData = getTransformRestoreData();
             UndoableEdit edit = new FlattenTransformUndoableEdit(restoreData);
             willChange();
