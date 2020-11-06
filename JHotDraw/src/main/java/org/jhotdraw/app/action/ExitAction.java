@@ -51,25 +51,39 @@ public class ExitAction extends AbstractSaveBeforeAction {
     @FeatureEntryPoint(JHotDrawFeatures.MANAGE_DRAWINGS)
     @Override
     public void actionPerformed(ActionEvent evt) {
-        if (app.isEnabled()) {
-            app.setEnabled(false);
-            List<View> unsavedViews = getUnsavedViews();
-            List<View> unsavedAndEnabledViews = unsavedViews
-                    .stream()
-                    .filter(View::isEnabled)
-                    .collect(Collectors.toList());
-            if(!unsavedViews.isEmpty() && unsavedAndEnabledViews.isEmpty()){
-                app.setEnabled(true);
-            } else {
-                saveAndClose(unsavedAndEnabledViews);
-            }
+        if (!app.isEnabled()) {
+            return;
+        }
+        app.setEnabled(false);
+        List<View> unsavedViews = getUnsavedViews();
+        List<View> unsavedAndEnabledViews = unsavedViews
+                .stream()
+                .filter(View::isEnabled)
+                .collect(Collectors.toList());
+        if(shouldSaveAndClose()){
+            saveAndClose(unsavedAndEnabledViews);
+        } else {
+            app.setEnabled(true);
         }
     }
 
+    protected boolean shouldSaveAndClose(){
+        List<View> unsavedViews = getUnsavedViews();
+        List<View> unsavedAndEnabledViews = unsavedViews
+                .stream()
+                .filter(View::isEnabled)
+                .collect(Collectors.toList());
+        return unsavedViews.isEmpty() || !unsavedAndEnabledViews.isEmpty();
+    }
+
     protected void saveAndClose(List<View> unsavedAndEnabledViews){
-        for (View p : unsavedAndEnabledViews){
-            p.setEnabled(false);
-            showSavePromt(p);
+        if (unsavedAndEnabledViews.isEmpty()){
+            doExit();
+        } else {
+            for (View p : unsavedAndEnabledViews){
+                p.setEnabled(false);
+                showSavePromt(p);
+            }
         }
     }
 
