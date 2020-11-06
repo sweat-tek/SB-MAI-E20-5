@@ -31,8 +31,10 @@ import org.jhotdraw.app.View;
  * @version 2.0 2006-06-15 Reworked.
  * <br>1.0 October 9, 2005 Created.
  */
-public class UndoAction extends AbstractViewAction {
-    public final static String ID = "edit.undo";
+public class UndoRedoAction extends AbstractViewAction {
+    public static String undoID = "edit.undo";
+    public static String redoID = "edit.redo";
+    public String ID;
     private ResourceBundleUtil labels = ResourceBundleUtil.getBundle("org.jhotdraw.app.Labels");
     
     private PropertyChangeListener redoActionPropertyListener = new PropertyChangeListener() {
@@ -47,8 +49,9 @@ public class UndoAction extends AbstractViewAction {
     };
     
     /** Creates a new instance. */
-    public UndoAction(Application app) {
+    public UndoRedoAction(Application app, String ID) {
         super(app);
+        this.ID = ID;
         labels.configureAction(this, ID);
     }
     

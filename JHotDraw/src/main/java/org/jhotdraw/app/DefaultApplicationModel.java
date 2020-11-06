@@ -156,7 +156,7 @@ public class DefaultApplicationModel
         }
         b = tb.add(getAction(SaveAction.ID));
         tb.addSeparator();
-        b = tb.add(getAction(UndoAction.ID));
+        b = tb.add(getAction(UndoRedoAction.ID));
         b.setFocusable(false);
         b = tb.add(getAction(RedoAction.ID));
         b.setFocusable(false);
@@ -186,7 +186,7 @@ public class DefaultApplicationModel
         
         m = new JMenu();
         labels.configureMenu(m, "edit");
-        mi = m.add(getAction(UndoAction.ID));
+        mi = m.add(getAction(UndoRedoAction.ID));
         mi.setIcon(null);
         mi = m.add(getAction(RedoAction.ID));
         mi.setIcon(null);

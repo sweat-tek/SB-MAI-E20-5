@@ -132,7 +132,7 @@ public class SVGView extends AbstractView implements ExportableView {
      * Initializes view specific actions.
      */
     private void initActions() {
-        putAction(UndoAction.ID, undo.getUndoAction());
+        putAction(UndoRedoAction.ID, undo.getUndoAction());
         putAction(RedoAction.ID, undo.getRedoAction());
     }
 
