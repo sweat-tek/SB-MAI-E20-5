@@ -53,12 +53,12 @@ public class ExitAction extends AbstractSaveBeforeAction {
     public void actionPerformed(ActionEvent evt) {
         if (app.isEnabled()) {
             app.setEnabled(false);
-            List<View> unsavedViewsSupplier = getUnsavedViews();
-            List<View> unsavedAndEnabledViews = unsavedViewsSupplier
+            List<View> unsavedViews = getUnsavedViews();
+            List<View> unsavedAndEnabledViews = unsavedViews
                     .stream()
                     .filter(View::isEnabled)
                     .collect(Collectors.toList());
-            if(!unsavedViewsSupplier.isEmpty() && unsavedAndEnabledViews.isEmpty()){
+            if(!unsavedViews.isEmpty() && unsavedAndEnabledViews.isEmpty()){
                 app.setEnabled(true);
             } else {
                 saveAndClose(unsavedAndEnabledViews);
