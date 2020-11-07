@@ -55,25 +55,20 @@ public class ExitAction extends AbstractSaveBeforeAction {
             return;
         }
         app.setEnabled(false);
+        SaveAndCloseIfUnsaved();
+    }
+
+    protected void SaveAndCloseIfUnsaved(){
         List<View> unsavedViews = getUnsavedViews();
         List<View> unsavedAndEnabledViews = unsavedViews
                 .stream()
                 .filter(View::isEnabled)
                 .collect(Collectors.toList());
-        if(shouldSaveAndClose()){
+        if(unsavedViews.isEmpty() || !unsavedAndEnabledViews.isEmpty()){
             saveAndClose(unsavedAndEnabledViews);
         } else {
             app.setEnabled(true);
         }
-    }
-
-    protected boolean shouldSaveAndClose(){
-        List<View> unsavedViews = getUnsavedViews();
-        List<View> unsavedAndEnabledViews = unsavedViews
-                .stream()
-                .filter(View::isEnabled)
-                .collect(Collectors.toList());
-        return unsavedViews.isEmpty() || !unsavedAndEnabledViews.isEmpty();
     }
 
     protected void saveAndClose(List<View> unsavedAndEnabledViews){

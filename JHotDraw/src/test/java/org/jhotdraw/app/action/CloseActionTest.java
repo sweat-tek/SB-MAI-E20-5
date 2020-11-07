@@ -13,7 +13,11 @@ import static org.mockito.Mockito.*;
 
 public class CloseActionTest extends AbstractSaveBeforeActionTest{
 
-    CloseAction closeAction;
+    private CloseAction closeAction;
+
+    public CloseActionTest() {
+        super(new CloseAction(null));
+    }
 
     @Before
     public void setUp() {

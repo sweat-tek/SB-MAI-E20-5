@@ -10,7 +10,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 
-public class AbstractActionTest {
+public abstract class AbstractActionTest {
 
     public Application mockApplication;
 
