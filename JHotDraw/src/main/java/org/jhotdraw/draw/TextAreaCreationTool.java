@@ -127,9 +127,13 @@ public class TextAreaCreationTool extends CreationTool implements ActionListener
                 }
             }
         }
-
+        
         // If the point is not contained in the current selection,
         // search for a figure in the drawing.
+        pointCheck(pressedFigure, p, textHolder, e);
+    }
+    
+    protected void pointCheck(Figure pressedFigure, Point2D.Double p, TextHolderFigure textHolder, MouseEvent e) {
         if (pressedFigure == null) {
             pressedFigure = getDrawing().findFigureInside(p);
         }
@@ -154,6 +158,8 @@ public class TextAreaCreationTool extends CreationTool implements ActionListener
             super.mousePressed(e);
         }
     }
+    
+    
 
     /**
      * This method allows subclasses to do perform additonal user interactions
