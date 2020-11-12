@@ -71,7 +71,6 @@ public class TextAreaCreationTool extends CreationTool implements ActionListener
 
     private FloatingTextArea textArea;
     private TextHolderFigure typingTarget;
-    private EditHelper editHelp = new EditHelper();
     /**
      * Rubberband color of the tool. When this is null, the tool does not
      * draw a rubberband.
@@ -221,7 +220,7 @@ public class TextAreaCreationTool extends CreationTool implements ActionListener
     @FeatureEntryPoint(JHotDrawFeatures.TEXT_AREA_TOOL)
     protected void endEdit() {
         
-            UndoableEdit edit = editHelp.endEditHelper(textArea, typingTarget);
+            UndoableEdit edit = EditHelper.endEditHelper(textArea, typingTarget);
             
             if (createdFigure != null & textArea.getText().length() <= 0) {
                     getDrawing().remove((Figure) getAddedFigure());

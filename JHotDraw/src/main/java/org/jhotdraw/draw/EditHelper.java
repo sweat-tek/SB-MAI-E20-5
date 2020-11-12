@@ -18,7 +18,7 @@ import org.jhotdraw.util.ResourceBundleUtil;
  */
 public class EditHelper {
     
-    public UndoableEdit endEditHelper(FloatingTextArea textArea, TextHolderFigure typingTarget) {
+    public static UndoableEdit endEditHelper(FloatingTextArea textArea, TextHolderFigure typingTarget) {
         if (typingTarget != null) {
             typingTarget.willChange();
 

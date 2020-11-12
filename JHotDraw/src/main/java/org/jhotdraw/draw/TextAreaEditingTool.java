@@ -47,7 +47,6 @@ public class TextAreaEditingTool extends AbstractTool implements ActionListener 
 
     private FloatingTextArea textArea;
     private TextHolderFigure typingTarget;
-    private EditHelper editHelp = new EditHelper();
 
 
     /** Creates a new instance. */
@@ -111,7 +110,7 @@ public class TextAreaEditingTool extends AbstractTool implements ActionListener 
     }
 
     protected void endEdit() {
-         UndoableEdit edit = editHelp.endEditHelper(textArea, typingTarget);
+         UndoableEdit edit = EditHelper.endEditHelper(textArea, typingTarget);
             
             if(edit != null) {
             getDrawing().fireUndoableEditHappened(edit);
