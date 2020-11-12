@@ -47,6 +47,8 @@ public class TextAreaEditingTool extends AbstractTool implements ActionListener 
 
     private FloatingTextArea textArea;
     private TextHolderFigure typingTarget;
+    private EditHelper editHelp = new EditHelper();
+
 
     /** Creates a new instance. */
     public TextAreaEditingTool(TextHolderFigure typingTarget) {
@@ -109,51 +111,16 @@ public class TextAreaEditingTool extends AbstractTool implements ActionListener 
     }
 
     protected void endEdit() {
-        if (typingTarget != null) {
-            typingTarget.willChange();
-
-            final TextHolderFigure editedFigure = typingTarget;
-            final String oldText = typingTarget.getText();
-            final String newText = textArea.getText();
-
-            if (newText.length() > 0) {
-                typingTarget.setText(newText);
-            } else {
-                    typingTarget.setText("");
-            }
-
-            UndoableEdit edit = new AbstractUndoableEdit() {
-
-                @Override
-                public String getPresentationName() {
-                    ResourceBundleUtil labels = ResourceBundleUtil.getBundle("org.jhotdraw.draw.Labels");
-                    return labels.getString("attribute.text.text");
-                }
-
-                @Override
-                public void undo() {
-                    super.undo();
-                    editedFigure.willChange();
-                    editedFigure.setText(oldText);
-                    editedFigure.changed();
-                }
-
-                @Override
-                public void redo() {
-                    super.redo();
-                    editedFigure.willChange();
-                    editedFigure.setText(newText);
-                    editedFigure.changed();
-                }
-            };
+         UndoableEdit edit = editHelp.endEditHelper(textArea, typingTarget);
+            
+            if(edit != null) {
             getDrawing().fireUndoableEditHappened(edit);
-
+            
             typingTarget.changed();
             typingTarget = null;
 
             textArea.endOverlay();
-        }
-    //	        view().checkDamage();
+            }
     }
 
     public void actionPerformed(ActionEvent event) {
