@@ -219,57 +219,20 @@ public class TextAreaCreationTool extends CreationTool implements ActionListener
 
     @FeatureEntryPoint(JHotDrawFeatures.TEXT_AREA_TOOL)
     protected void endEdit() {
-        if (typingTarget != null) {
-            typingTarget.willChange();
-
-            final TextHolderFigure editedFigure = typingTarget;
-            final String oldText = typingTarget.getText();
-            final String newText = textArea.getText();
-
-            if (newText.length() > 0) {
-                typingTarget.setText(newText);
-            } else {
-                if (createdFigure != null) {
-                    getDrawing().remove((Figure) getAddedFigure());
-                // XXX - Fire undoable edit here!!
-                } else {
-                    typingTarget.setText("");
-                }
-            }
-
-            UndoableEdit edit = new AbstractUndoableEdit() {
-
-                @Override
-                public String getPresentationName() {
-                    ResourceBundleUtil labels = ResourceBundleUtil.getBundle("org.jhotdraw.draw.Labels");
-                    return labels.getString("attribute.text.text");
-                }
-
-                @Override
-                public void undo() {
-                    super.undo();
-                    editedFigure.willChange();
-                    editedFigure.setText(oldText);
-                    editedFigure.changed();
-                }
-
-                @Override
-                public void redo() {
-                    super.redo();
-                    editedFigure.willChange();
-                    editedFigure.setText(newText);
-                    editedFigure.changed();
-                }
-            };
+        
+            EditHelper eh = new EditHelper();
+            UndoableEdit edit = eh.endEditHelper(textArea, typingTarget);
+            
+            //if (createdFigure != null & textArea.getText().length() <= 0) {
+            //        getDrawing().remove((Figure) getAddedFigure());
+           // }
+            
+            if(edit != null) {
             getDrawing().fireUndoableEditHappened(edit);
-
-            typingTarget.changed();
-            typingTarget = null;
-
-            textArea.endOverlay();
+            }
+            
         }
     //	        view().checkDamage();
-    }
 
     public void actionPerformed(ActionEvent event) {
         endEdit();
