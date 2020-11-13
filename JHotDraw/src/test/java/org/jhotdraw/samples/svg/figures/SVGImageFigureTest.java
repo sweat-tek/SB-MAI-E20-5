@@ -105,7 +105,7 @@ public class SVGImageFigureTest {
      * Test of loadImage method, of class SVGImageFigure.
      */
     @Test
-    public void testLoadImage_File() throws Exception {
+    public void testLoadImage_File_UsingImageFile() throws IOException {
         String path = "src/test/Ressources/ER.jpg"; 
 	File file = new File(path);
         file = new File(file.getAbsolutePath());
@@ -116,13 +116,20 @@ public class SVGImageFigureTest {
         //We here assert that the image has succesfully been set in the SVGImageFigure object.
         assertNotNull(instance.getImageData());
         
-        //Now we will try and do the same with a none image file.
-        path = "src/test/Ressources/SVGImageFigureTest.java"; 
-	file = new File(path);
+        
+    }
+    
+    /**
+     * Test of loadImage method, of class SVGImageFigure.
+     */
+    @Test
+     public void testLoadImage_File_UsingNONImageFile() throws IOException {
+        //We will try to insert a non image file.
+        String path = "src/test/Ressources/SVGImageFigureTest.java"; 
+	File file = new File(path);
         file = new File(file.getAbsolutePath());
         
-        //We reset the instance so the prior image is now gone
-        instance = new SVGImageFigure();
+        SVGImageFigure instance = new SVGImageFigure();
         
         try {
             instance.loadImage(file);
@@ -134,6 +141,6 @@ public class SVGImageFigureTest {
             System.out.println("YES");
             assertNull(instance.getImageData());
         } 
-    }
+     }
 }
 
