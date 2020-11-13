@@ -11,7 +11,6 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import javax.swing.Action;
@@ -116,24 +115,21 @@ public class SVGImageFigureTest {
         //We here assert that the image has succesfully been set in the SVGImageFigure object.
         assertNotNull(instance.getImageData());
         
-        //Now we will try and do the same with a none image file.
-        path = "src/test/Ressources/SVGImageFigureTest.java"; 
-	file = new File(path);
-        file = new File(file.getAbsolutePath());
-        
-        //We reset the instance so the prior image is now gone
-        instance = new SVGImageFigure();
-        
-        try {
-            instance.loadImage(file);
-            //If we get to here the exeption is not thrown which is bad, since it is not an Image file
-            fail();
-        } catch(IOException e) {
-            //If we get Null, it means the file is not in our SVGImageFigure object which is
-            //what we want, that is the exception catches the error.
-            System.out.println("YES");
-            assertNull(instance.getImageData());
-        } 
+//        // TODO review the generated test code and remove the default call to fail.
+//        fail("The test case is a prototype.");
     }
-}
 
+    /**
+     * Test of loadImage method, of class SVGImageFigure.
+     */
+//    @Test
+//    public void testLoadImage_InputStream() throws Exception {
+//        System.out.println("loadImage");
+//        InputStream in = null;
+//        SVGImageFigure instance = new SVGImageFigure();
+//        instance.loadImage(in);
+//        // TODO review the generated test code and remove the default call to fail.
+//        fail("The test case is a prototype.");
+//    }
+    
+}
