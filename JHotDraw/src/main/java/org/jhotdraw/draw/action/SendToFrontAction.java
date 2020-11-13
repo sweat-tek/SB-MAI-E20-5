@@ -32,29 +32,36 @@ import org.jhotdraw.draw.*;
 public class SendToFrontAction extends AbstractSelectedAction {
 
     public static String ID = "edit.bringToFront";
+    private AbstractUndoableEdit undoableEdit;
 
+    public AbstractUndoableEdit getUndoableEdit() {
+        return undoableEdit;
+    }
     /**
      * Creates a new instance.
      */
     public SendToFrontAction(DrawingEditor editor) {
         super(editor);
         labels.configureAction(this, ID);
+          System.out.println("Editor FROM SendToFront: " + editor);
     }
 
     @FeatureEntryPoint(JHotDrawFeatures.ARRANGE)
     @Override
     public void actionPerformed(java.awt.event.ActionEvent e) {
         final DrawingView view = getView();
+        //System.out.println("ID " + ID );
         final LinkedList<Figure> figures = new LinkedList<Figure>(view.getSelectedFigures());
         sendToFront(view, figures);
-        fireUndoableEditHappened(setupUndoableEditOverrides(view, figures));
+        undoableEdit = setupUndoableEditOverrides(view, figures);
+        fireUndoableEditHappened(undoableEdit);
     }
 
     public AbstractUndoableEdit setupUndoableEditOverrides(DrawingView view, Collection figures) {
         AbstractUndoableEdit undoableEdit = new AbstractUndoableEdit() {
             @Override
             public String getPresentationName() {
-                System.out.println("Undoable Edit from send to front, label: " + ID + " " + labels.getTextProperty(ID));
+               // System.out.println("Undoable Edit from send to front, label: " + ID + " " + labels.getTextProperty(ID));
                 return labels.getTextProperty(ID);
             }
 
@@ -70,6 +77,7 @@ public class SendToFrontAction extends AbstractSelectedAction {
                 SendToBackAction.sendToBack(view, figures);
             }
         };
+        //System.out.println("undoableEdit " +undoableEdit);
         return undoableEdit;
     }
 
