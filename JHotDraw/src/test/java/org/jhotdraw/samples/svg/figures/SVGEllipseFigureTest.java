@@ -61,6 +61,4 @@ public class SVGEllipseFigureTest
         assertTrue(ellipseClone != ellipseFigure);
     }
 
-    @Test
-    public void
 }
