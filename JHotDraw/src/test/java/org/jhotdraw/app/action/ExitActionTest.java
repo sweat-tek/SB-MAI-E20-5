@@ -61,6 +61,7 @@ public class ExitActionTest extends AbstractSaveBeforeActionTest {
         doCallRealMethod().when(mockAction).getUnsavedViews();
         View v = mock(View.class);
         doReturn(true).when(v).hasUnsavedChanges();
+        doReturn(true).when(v).isEnabled();
         List<View> views = new ArrayList<>();
         views.add(v);
         doReturn(views).when(mockApplication).views();
@@ -76,6 +77,7 @@ public class ExitActionTest extends AbstractSaveBeforeActionTest {
         doCallRealMethod().when(mockAction).getUnsavedViews();
         View v = mock(View.class);
         doReturn(false).when(v).hasUnsavedChanges();
+        doReturn(true).when(v).isEnabled();
         List<View> views = new ArrayList<>();
         views.add(v);
         doReturn(views).when(mockApplication).views();

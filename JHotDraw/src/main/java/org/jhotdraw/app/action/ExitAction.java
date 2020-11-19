@@ -83,12 +83,12 @@ public class ExitAction extends AbstractSaveBeforeAction {
     }
 
     protected void doExit() {
-        getApplication().stop();
+        app.stop();
         System.exit(0);
     }
 
     protected List<View> getUnsavedViews(){
-        Stream<View> views = getApplication().views().stream();
+        Stream<View> views = app.views().stream();
         Stream<View> viewsWithUnsavedChanges = views.filter(View::hasUnsavedChanges);
         return viewsWithUnsavedChanges.collect(Collectors.toList());
     }
