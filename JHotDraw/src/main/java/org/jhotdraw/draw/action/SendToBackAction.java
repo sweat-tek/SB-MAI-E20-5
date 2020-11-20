@@ -55,7 +55,7 @@ public class SendToBackAction extends AbstractSelectedAction {
         AbstractUndoableEdit undoableEdit = new AbstractUndoableEdit() {
             @Override
             public String getPresentationName() {
-                System.out.println("Undoable Edit from send to back, label: " + ID + " " + labels.getTextProperty(ID));
+           
                 return labels.getTextProperty(ID);
             }
 

@@ -193,7 +193,7 @@ public class QuadTreeDrawing extends AbstractDrawing {
     public Figure findFigureBehind(Point2D.Double p, Figure figure) {
         boolean isBehind = false;
         for (Figure f : getFiguresFrontToBack()) {
-            System.out.println("findFigureBehind 1 " + f);
+   
             if (isBehind) {
                 if (f.isVisible() && f.contains(p)) {
                     return f;
@@ -208,7 +208,7 @@ public class QuadTreeDrawing extends AbstractDrawing {
     public Figure findFigureBehind(Point2D.Double p, Collection<? extends Figure> children) {
         int inFrontOf = children.size();
         for (Figure f : getFiguresFrontToBack()) {
-            System.out.println("findFigureBehind 2" + f);
+       ;
             if (inFrontOf == 0) {
                 if (f.isVisible() && f.contains(p)) {
                     return f;
@@ -237,7 +237,7 @@ public class QuadTreeDrawing extends AbstractDrawing {
     public java.util.List<Figure> findFiguresWithin(Rectangle2D.Double bounds) {
         LinkedList<Figure> contained = new LinkedList<Figure>();
         for (Figure f : children) {
-            System.out.println("findFiguresWithin " + f);
+     
             Rectangle2D.Double r = f.getBounds();
             if (AttributeKeys.TRANSFORM.get(f) != null) {
                 Rectangle2D rt = AttributeKeys.TRANSFORM.get(f).createTransformedShape(r).getBounds2D();
@@ -254,7 +254,7 @@ public class QuadTreeDrawing extends AbstractDrawing {
     @FeatureEntryPoint(JHotDrawFeatures.ARRANGE)
     public void bringToFront(Figure figure) {
         if (children.remove(figure)) {
-            System.out.println("bringToFront from QUAD");
+       
             children.add(figure);
             needsSorting = true;
             fireAreaInvalidated(figure.getDrawingArea());
@@ -267,7 +267,7 @@ public class QuadTreeDrawing extends AbstractDrawing {
     @FeatureEntryPoint(JHotDrawFeatures.ARRANGE)
     public void sendToBack(Figure figure) {
         if (children.remove(figure)) {
-            System.out.println("sendToBack from QUAD");
+         
             children.add(0, figure);
 
             needsSorting = true;

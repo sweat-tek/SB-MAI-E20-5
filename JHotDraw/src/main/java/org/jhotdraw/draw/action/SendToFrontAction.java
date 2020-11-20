@@ -43,14 +43,14 @@ public class SendToFrontAction extends AbstractSelectedAction {
     public SendToFrontAction(DrawingEditor editor) {
         super(editor);
         labels.configureAction(this, ID);
-          System.out.println("Editor FROM SendToFront: " + editor);
+
     }
 
     @FeatureEntryPoint(JHotDrawFeatures.ARRANGE)
     @Override
     public void actionPerformed(java.awt.event.ActionEvent e) {
         final DrawingView view = getView();
-        //System.out.println("ID " + ID );
+ 
         final LinkedList<Figure> figures = new LinkedList<Figure>(view.getSelectedFigures());
         sendToFront(view, figures);
         undoableEdit = setupUndoableEditOverrides(view, figures);
@@ -61,7 +61,7 @@ public class SendToFrontAction extends AbstractSelectedAction {
         AbstractUndoableEdit undoableEdit = new AbstractUndoableEdit() {
             @Override
             public String getPresentationName() {
-               // System.out.println("Undoable Edit from send to front, label: " + ID + " " + labels.getTextProperty(ID));
+              
                 return labels.getTextProperty(ID);
             }
 
