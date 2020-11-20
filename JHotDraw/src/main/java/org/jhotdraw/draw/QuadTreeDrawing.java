@@ -29,11 +29,11 @@ import org.jhotdraw.geom.Geom;
  *
  * @author Werner Randelshofer
  * @version 2.2.2 2009-04-04 draw() method did not check isVisible() property.
- * <br>2.2.1 2008-03-26 Fixed NullPointerException when setting the
- * canvas size. Fixed cloning of quadTree and canvasSize. 
+ * <br>2.2.1 2008-03-26 Fixed NullPointerException when setting the canvas size.
+ * Fixed cloning of quadTree and canvasSize.
  * <br>2.2 2007-04-09 Added methods setCanvasSize, getCanvasSize.
- * <br>2.1 2007-02-09 Moved FigureListener and UndoableEditListener into
- * inner class.
+ * <br>2.1 2007-02-09 Moved FigureListener and UndoableEditListener into inner
+ * class.
  * <br>2.0 2006-01-14 Changed to support double precision coordinates.
  * <br>1.0 2003-12-01 Derived from JHotDraw 5.4b1.
  */
@@ -120,8 +120,8 @@ public class QuadTreeDrawing extends AbstractDrawing {
     }
 
     /**
-     * Returns an iterator to iterate in
-     * Z-order front to back over the children.
+     * Returns an iterator to iterate in Z-order front to back over the
+     * children.
      */
     public java.util.List<Figure> getFiguresFrontToBack() {
         ensureSorted();
@@ -193,6 +193,7 @@ public class QuadTreeDrawing extends AbstractDrawing {
     public Figure findFigureBehind(Point2D.Double p, Figure figure) {
         boolean isBehind = false;
         for (Figure f : getFiguresFrontToBack()) {
+   
             if (isBehind) {
                 if (f.isVisible() && f.contains(p)) {
                     return f;
@@ -207,6 +208,7 @@ public class QuadTreeDrawing extends AbstractDrawing {
     public Figure findFigureBehind(Point2D.Double p, Collection<? extends Figure> children) {
         int inFrontOf = children.size();
         for (Figure f : getFiguresFrontToBack()) {
+       ;
             if (inFrontOf == 0) {
                 if (f.isVisible() && f.contains(p)) {
                     return f;
@@ -235,6 +237,7 @@ public class QuadTreeDrawing extends AbstractDrawing {
     public java.util.List<Figure> findFiguresWithin(Rectangle2D.Double bounds) {
         LinkedList<Figure> contained = new LinkedList<Figure>();
         for (Figure f : children) {
+     
             Rectangle2D.Double r = f.getBounds();
             if (AttributeKeys.TRANSFORM.get(f) != null) {
                 Rectangle2D rt = AttributeKeys.TRANSFORM.get(f).createTransformedShape(r).getBounds2D();
@@ -251,17 +254,22 @@ public class QuadTreeDrawing extends AbstractDrawing {
     @FeatureEntryPoint(JHotDrawFeatures.ARRANGE)
     public void bringToFront(Figure figure) {
         if (children.remove(figure)) {
+       
             children.add(figure);
             needsSorting = true;
             fireAreaInvalidated(figure.getDrawingArea());
         }
     }
 
+
+
     @Override
     @FeatureEntryPoint(JHotDrawFeatures.ARRANGE)
     public void sendToBack(Figure figure) {
         if (children.remove(figure)) {
+         
             children.add(0, figure);
+
             needsSorting = true;
             fireAreaInvalidated(figure.getDrawingArea());
         }
