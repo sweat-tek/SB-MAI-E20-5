@@ -7,6 +7,7 @@ package org.jhotdraw.draw.action;
 
 import java.awt.Color;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.jhotdraw.draw.AttributeKey;
@@ -73,7 +74,8 @@ public class AttributeActionTest {
         
         //Imitating selected figures
         BezierFigure bf = new BezierFigure();
-        Set<Figure> figureSet = Set.of(bf);
+        Set<Figure> figureSet = new HashSet<>();
+        figureSet.add(bf);
        
         editorColorChooserAction.applyAttributesTo(attr, figureSet);
         //assertEquals(true, true);
