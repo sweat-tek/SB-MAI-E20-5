@@ -88,33 +88,37 @@ public class SVGRectFigure extends SVGAttributedFigure implements SVGFigure {
         if (roundrect.archeight == 0 && roundrect.arcwidth == 0) {
             g.draw(roundrect.getBounds2D());
         } else {
-            // We have to generate the path for the round rectangle manually,
-            // because the path of a Java RoundRectangle is drawn counter clockwise
-            // whereas an SVG rect needs to be drawn clockwise.
-            GeneralPath p = new GeneralPath();
-            double aw = roundrect.arcwidth / 2d;
-            double ah = roundrect.archeight / 2d;
-            p.moveTo((float) (roundrect.x + aw), (float) roundrect.y);
-            p.lineTo((float) (roundrect.x + roundrect.width - aw), (float) roundrect.y);
-            p.curveTo((float) (roundrect.x + roundrect.width - aw * acv), (float) roundrect.y, //
-                    (float) (roundrect.x + roundrect.width), (float)(roundrect.y + ah * acv), //
-                    (float) (roundrect.x + roundrect.width), (float) (roundrect.y + ah));
-            p.lineTo((float) (roundrect.x + roundrect.width), (float) (roundrect.y + roundrect.height - ah));
-            p.curveTo(
-                    (float) (roundrect.x + roundrect.width), (float) (roundrect.y + roundrect.height - ah * acv),//
-                    (float) (roundrect.x + roundrect.width - aw * acv), (float) (roundrect.y + roundrect.height),//
-                    (float) (roundrect.x + roundrect.width - aw), (float) (roundrect.y + roundrect.height));
-            p.lineTo((float) (roundrect.x + aw), (float) (roundrect.y + roundrect.height));
-            p.curveTo((float) (roundrect.x + aw*acv), (float) (roundrect.y + roundrect.height),//
-                    (float) (roundrect.x), (float) (roundrect.y + roundrect.height - ah*acv),//
-                   (float) roundrect.x, (float) (roundrect.y + roundrect.height - ah));
-            p.lineTo((float) roundrect.x, (float) (roundrect.y + ah));
-            p.curveTo((float) (roundrect.x), (float) (roundrect.y + ah*acv),//
-                    (float) (roundrect.x + aw*acv), (float)(roundrect.y),//
-                    (float)(roundrect.x + aw), (float)(roundrect.y));
-            p.closePath();
-            g.draw(p);
+            drawClockwise(g);
         }
+    }
+
+    private void drawClockwise(Graphics2D g) {
+        // We have to generate the path for the round rectangle manually,
+        // because the path of a Java RoundRectangle is drawn counter clockwise
+        // whereas an SVG rect needs to be drawn clockwise.
+        GeneralPath p = new GeneralPath();
+        double aw = roundrect.arcwidth / 2d;
+        double ah = roundrect.archeight / 2d;
+        p.moveTo((float) (roundrect.x + aw), (float) roundrect.y);
+        p.lineTo((float) (roundrect.x + roundrect.width - aw), (float) roundrect.y);
+        p.curveTo((float) (roundrect.x + roundrect.width - aw * acv), (float) roundrect.y, //
+                (float) (roundrect.x + roundrect.width), (float)(roundrect.y + ah * acv), //
+                (float) (roundrect.x + roundrect.width), (float) (roundrect.y + ah));
+        p.lineTo((float) (roundrect.x + roundrect.width), (float) (roundrect.y + roundrect.height - ah));
+        p.curveTo(
+                (float) (roundrect.x + roundrect.width), (float) (roundrect.y + roundrect.height - ah * acv),//
+                (float) (roundrect.x + roundrect.width - aw * acv), (float) (roundrect.y + roundrect.height),//
+                (float) (roundrect.x + roundrect.width - aw), (float) (roundrect.y + roundrect.height));
+        p.lineTo((float) (roundrect.x + aw), (float) (roundrect.y + roundrect.height));
+        p.curveTo((float) (roundrect.x + aw*acv), (float) (roundrect.y + roundrect.height),//
+                (float) (roundrect.x), (float) (roundrect.y + roundrect.height - ah*acv),//
+                (float) roundrect.x, (float) (roundrect.y + roundrect.height - ah));
+        p.lineTo((float) roundrect.x, (float) (roundrect.y + ah));
+        p.curveTo((float) (roundrect.x), (float) (roundrect.y + ah*acv),//
+                (float) (roundrect.x + aw*acv), (float)(roundrect.y),//
+                (float)(roundrect.x + aw), (float)(roundrect.y));
+        p.closePath();
+        g.draw(p);
     }
 
     // SHAPE AND BOUNDS
