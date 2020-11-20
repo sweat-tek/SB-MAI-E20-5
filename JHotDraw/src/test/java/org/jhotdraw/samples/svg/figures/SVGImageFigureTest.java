@@ -5,19 +5,9 @@
  */
 package org.jhotdraw.samples.svg.figures;
 
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
-import javax.swing.Action;
-import org.jhotdraw.draw.ConnectionFigure;
-import org.jhotdraw.draw.Connector;
-import org.jhotdraw.draw.Handle;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -138,9 +128,10 @@ public class SVGImageFigureTest {
         } catch(IOException e) {
             //If we get Null, it means the file is not in our SVGImageFigure object which is
             //what we want, that is the exception catches the error.
-            System.out.println("YES");
             assertNull(instance.getImageData());
         } 
      }
+     
+     
 }
 
