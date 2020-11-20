@@ -179,7 +179,7 @@ public class ToolsToolBar extends AbstractToolBar {
 
         a.add(null); // separator
 
-        a.add(new BringToFrontAction(editor));
+        a.add(new SendToFrontAction(editor));
         a.add(new SendToBackAction(editor));
 
         return a;

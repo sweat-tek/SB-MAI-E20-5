@@ -33,9 +33,7 @@ import static org.jhotdraw.draw.AttributeKeys.*;
  * <br>1.0.1 2008-03-30 Made basicRemove method non-final.
  * <br>1.0 July 17, 2007 Created.
  */
-public abstract class AbstractCompositeFigure
-        extends AbstractFigure
-        implements CompositeFigure {
+public abstract class AbstractCompositeFigure extends AbstractFigure implements CompositeFigure {
 
     /**
      * A Layouter determines how the children of the CompositeFigure
