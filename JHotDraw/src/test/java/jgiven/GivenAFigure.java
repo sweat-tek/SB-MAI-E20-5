@@ -7,6 +7,7 @@ package jgiven;
 
 import com.tngtech.jgiven.Stage;
 import com.tngtech.jgiven.annotation.ProvidedScenarioState;
+import java.util.HashSet;
 import java.util.Set;
 import org.jhotdraw.draw.BezierFigure;
 import org.jhotdraw.draw.DefaultDrawing;
@@ -42,7 +43,8 @@ public class GivenAFigure extends Stage<GivenAFigure> {
         
         //Imitating selected figure
         bf = new BezierFigure();
-        figureSet = Set.of(bf);
+        figureSet = new HashSet<>();
+        figureSet.add(bf);
         return self();
     }
 }
