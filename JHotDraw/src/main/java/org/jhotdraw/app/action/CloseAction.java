@@ -42,8 +42,7 @@ public class CloseAction extends AbstractSaveBeforeAction {
     @FeatureEntryPoint(JHotDrawFeatures.MANAGE_DRAWINGS)
     @Override protected void doIt(View view) {
         if (view != null && view.getApplication() != null) {
-            view.getApplication().
-                    dispose(view);
+            view.getApplication().dispose(view);
         }
     }
 }

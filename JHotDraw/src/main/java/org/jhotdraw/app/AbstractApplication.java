@@ -72,17 +72,7 @@ public abstract class AbstractApplication extends AbstractBean implements Applic
         add(p);
         p.setEnabled(false);
         show(p);
-        p.execute(new Worker() {
-
-            public Object construct() {
-                p.clear();
-                return null;
-            }
-
-            public void finished(Object result) {
-                p.setEnabled(true);
-            }
-        });
+        p.execute(new ClearViewWorker(p));
     }
 
     @FeatureEntryPoint(JHotDrawFeatures.MANAGE_DRAWINGS)
@@ -271,5 +261,23 @@ public abstract class AbstractApplication extends AbstractBean implements Applic
     }
 
     public void addWindow(Window window, View p) {
+    }
+
+    public static class ClearViewWorker extends Worker {
+
+        private final View p;
+
+        public ClearViewWorker(View p) {
+            this.p = p;
+        }
+
+        public Object construct() {
+            p.clear();
+            return null;
+        }
+
+        public void finished(Object result) {
+            p.setEnabled(true);
+        }
     }
 }

@@ -45,103 +45,78 @@ import org.jhotdraw.app.View;
  */
 public abstract class AbstractSaveBeforeAction extends AbstractViewAction {
 
-    private Component oldFocusOwner;
+    protected Component oldFocusOwner;
+    protected ResourceBundleUtil labels;
+    protected Application app;
+    protected final String LABEL_SAVE_OPTION = "file.saveBefore.saveOption.text";
+    protected final String LABEL_CANCEL_OPTION = "file.saveBefore.cancelOption.text";
+    protected final String LABEL_DONT_SAVE_OPTION = "file.saveBefore.dontSaveOption.text";
 
     /** Creates a new instance. */
     public AbstractSaveBeforeAction(Application app) {
         super(app);
+        this.app = app;
     }
 
     public void actionPerformed(ActionEvent evt) {
+        labels = ResourceBundleUtil.getBundle("org.jhotdraw.app.Labels");
         final View p = getActiveView();
-        if (p.isEnabled()) {
-            final ResourceBundleUtil labels = ResourceBundleUtil.getBundle("org.jhotdraw.app.Labels");
-            Window wAncestor = SwingUtilities.getWindowAncestor(p.getComponent());
-            oldFocusOwner = (wAncestor == null) ? null : wAncestor.getFocusOwner();
-            p.setEnabled(false);
-
-            if (p.hasUnsavedChanges()) {
-                JOptionPane pane = new JOptionPane(
-                        "<html>" + UIManager.getString("OptionPane.css") +
-                        labels.getString("file.saveBefore.doYouWantToSave.message"),
-                        JOptionPane.WARNING_MESSAGE);
-                Object[] options = { //
-                    labels.getString("file.saveBefore.saveOption.text"),//
-                    labels.getString("file.saveBefore.cancelOption.text"), //
-                    labels.getString("file.saveBefore.dontSaveOption.text")//
-                };
-                pane.setOptions(options);
-                pane.setInitialValue(options[0]);
-                pane.putClientProperty("Quaqua.OptionPane.destructiveOption", new Integer(2));
-                JSheet.showSheet(pane, p.getComponent(), new SheetListener() {
-
-                    public void optionSelected(SheetEvent evt) {
-                        Object value = evt.getValue();
-                        if (value == null || value.equals(labels.getString("file.saveBefore.cancelOption.text"))) {
-                            p.setEnabled(true);
-                        } else if (value.equals(labels.getString("file.saveBefore.dontSaveOption.text"))) {
-                            doIt(p);
-                            p.setEnabled(true);
-                        } else if (value.equals(labels.getString("file.saveBefore.saveOption.text"))) {
-                            saveChanges(p);
-                        }
-                    }
-                });
-
-            } else {
-                doIt(p);
-                p.setEnabled(true);
-                if (oldFocusOwner != null) {
-                    oldFocusOwner.requestFocus();
-                }
-            }
+        if (!p.isEnabled()) {
+            return;
         }
+        Window wAncestor = SwingUtilities.getWindowAncestor(p.getComponent());
+        oldFocusOwner = (wAncestor == null) ? null : wAncestor.getFocusOwner();
+        p.setEnabled(false);
+        saveIfUnsavedChanges(p);
+        p.setEnabled(true);
+        returnFocusToOrigin();
+    }
+
+    protected void saveIfUnsavedChanges(View p){
+        if (p.hasUnsavedChanges()) {
+            showSavePromt(p);
+        } else {
+            doIt(p);
+        }
+    }
+
+    protected void returnFocusToOrigin(){
+        if (oldFocusOwner != null) {
+            oldFocusOwner.requestFocus();
+        }
+    }
+
+    protected JOptionPane getSavePromtPane(){
+        JOptionPane pane = new JOptionPane(
+                "<html>" + UIManager.getString("OptionPane.css") +
+                        labels.getString("file.saveBefore.doYouWantToSave.message"),
+                JOptionPane.WARNING_MESSAGE);
+        Object[] options = {
+                labels.getString(LABEL_SAVE_OPTION),
+                labels.getString(LABEL_CANCEL_OPTION),
+                labels.getString(LABEL_DONT_SAVE_OPTION)
+        };
+        pane.setOptions(options);
+        pane.setInitialValue(options[0]);
+        pane.putClientProperty("Quaqua.OptionPane.destructiveOption", 2);
+        return pane;
+    }
+
+    protected void showSavePromt(View p){
+        JSheet.showSheet(getSavePromtPane(), p.getComponent(), new SaveBeforeOptionSheetListener(p));
     }
 
     protected void saveChanges(final View p) {
         if (p.getFile() == null) {
             JFileChooser fileChooser = p.getSaveChooser();
-            //int option = fileChooser.showSaveDialog(this);
-            JSheet.showSaveSheet(fileChooser, p.getComponent(), new SheetListener() {
-
-                public void optionSelected(final SheetEvent evt) {
-                    if (evt.getOption() == JFileChooser.APPROVE_OPTION) {
-                        final File file;
-                        if (evt.getFileChooser().getFileFilter() instanceof ExtensionFileFilter) {
-                            file = ((ExtensionFileFilter) evt.getFileChooser().getFileFilter()).makeAcceptable(evt.getFileChooser().getSelectedFile());
-                        } else {
-                            file = evt.getFileChooser().getSelectedFile();
-                        }
-                        saveToFile(p, file);
-                    } else {
-                        p.setEnabled(true);
-                        if (oldFocusOwner != null) {
-                            oldFocusOwner.requestFocus();
-                        }
-                    }
-                }
-            });
+            JSheet.showSaveSheet(fileChooser, p.getComponent(), new SaveLocationSheetListener(p));
         } else {
             saveToFile(p, p.getFile());
         }
     }
 
     protected void saveToFile(final View p, final File file) {
-        p.execute(new Worker() {
-
-            public Object construct() {
-                try {
-                    p.write(file);
-                    return null;
-                } catch (IOException e) {
-                    return e;
-                }
-            }
-
-            public void finished(Object value) {
-                fileSaved(p, file, value);
-            }
-        });
+        p.execute(new SaveFileWorker(p, file));
     }
 
     protected void fileSaved(View p, File file, Object value) {
@@ -150,24 +125,103 @@ public abstract class AbstractSaveBeforeAction extends AbstractViewAction {
             p.markChangesAsSaved();
             doIt(p);
         } else {
-            String message;
-            if ((value instanceof Throwable) && ((Throwable) value).getMessage() != null) {
-                message = ((Throwable) value).getMessage();
-            } else {
-                message = value.toString();
-            }
-            ResourceBundleUtil labels = ResourceBundleUtil.getBundle("org.jhotdraw.app.Labels");
-            JSheet.showMessageSheet(getActiveView().getComponent(),
-                    "<html>" + UIManager.getString("OptionPane.css") +
-                    "<b>" + labels.getFormatted("file.saveBefore.couldntSave.message", file.getName()) + "</b><br>" +
-                    ((message == null) ? "" : message),
-                    JOptionPane.ERROR_MESSAGE);
+            showErrorPrompt(file, value);
         }
         p.setEnabled(true);
-        if (oldFocusOwner != null) {
-            oldFocusOwner.requestFocus();
+        returnFocusToOrigin();
+    }
+
+    protected void showErrorPrompt(File file, Object value){
+        String message;
+        if ((value instanceof Throwable) && ((Throwable) value).getMessage() != null) {
+            message = ((Throwable) value).getMessage();
+        } else {
+            message = value.toString();
         }
+        String promptMessage = "<html>" + UIManager.getString("OptionPane.css") +
+                "<b>" + labels.getFormatted("file.saveBefore.couldntSave.message", file.getName()) + "</b><br>" +
+                ((message == null) ? "" : message);
+        JSheet.showMessageSheet(getActiveView().getComponent(), promptMessage, JOptionPane.ERROR_MESSAGE);
     }
 
     protected abstract void doIt(View p);
+
+    protected class SaveBeforeOptionSheetListener implements SheetListener {
+        private final View p;
+
+        public SaveBeforeOptionSheetListener(View p) {
+            this.p = p;
+        }
+
+        public void optionSelected(SheetEvent evt) {
+            Object value = evt.getValue();
+            if (value instanceof String){
+                parseLabel((String) value);
+            } else {
+                p.setEnabled(true);
+            }
+        }
+
+        private void parseLabel(String value){
+            if (value.equals(labels.getString(LABEL_CANCEL_OPTION))) {
+                p.setEnabled(true);
+            } else if (value.equals(labels.getString(LABEL_DONT_SAVE_OPTION))) {
+                doIt(p);
+                p.setEnabled(true);
+            } else if (value.equals(labels.getString(LABEL_SAVE_OPTION))) {
+                saveChanges(p);
+            }
+        }
+
+    }
+
+    protected class SaveLocationSheetListener implements SheetListener {
+        private final View p;
+
+        public SaveLocationSheetListener(View p) {
+            this.p = p;
+        }
+
+        public void optionSelected(final SheetEvent evt) {
+            if (evt.getOption() == JFileChooser.APPROVE_OPTION) {
+                final File file = getSelectedFile(evt);
+                saveToFile(p, file);
+            } else {
+                p.setEnabled(true);
+                returnFocusToOrigin();
+            }
+        }
+
+        private File getSelectedFile(SheetEvent evt){
+            if (evt.getFileChooser().getFileFilter() instanceof ExtensionFileFilter) {
+                return ((ExtensionFileFilter) evt.getFileChooser().getFileFilter()).makeAcceptable(evt.getFileChooser().getSelectedFile());
+            } else {
+                return evt.getFileChooser().getSelectedFile();
+            }
+        }
+    }
+
+    private class SaveFileWorker extends Worker {
+
+        private final View p;
+        private final File file;
+
+        public SaveFileWorker(View p, File file) {
+            this.p = p;
+            this.file = file;
+        }
+
+        public Object construct() {
+            try {
+                p.write(file);
+                return null;
+            } catch (IOException e) {
+                return e;
+            }
+        }
+
+        public void finished(Object value) {
+            fileSaved(p, file, value);
+        }
+    }
 }
