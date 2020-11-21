@@ -3,6 +3,7 @@ package org.jhotdraw.samples.svg.figures;
 import com.tngtech.jgiven.Stage;
 import com.tngtech.jgiven.annotation.ExpectedScenarioState;
 import org.jhotdraw.draw.*;
+import static org.junit.Assert.*;
 
 public class ThenEllipseOnCanvas extends Stage<ThenEllipseOnCanvas>
 {
@@ -13,6 +14,7 @@ public class ThenEllipseOnCanvas extends Stage<ThenEllipseOnCanvas>
 
     ThenEllipseOnCanvas ellipseIsOnCanvas(){
         editor.getActiveView().getDrawing().add(ellipse);
+        assertTrue(editor.getActiveView().getDrawing().getChild(0) == ellipse);
         return this;
     }
 }

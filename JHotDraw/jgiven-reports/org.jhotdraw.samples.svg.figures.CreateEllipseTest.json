@@ -26,44 +26,44 @@
                 }
               ],
               "status": "PASSED",
-              "durationInNanos": 22115700
+              "durationInNanos": 9743100
             },
             {
-              "name": "when ellipseis created",
+              "name": "ellipseis created",
               "words": [
                 {
                   "value": "When",
                   "isIntroWord": true
                 },
                 {
-                  "value": "when ellipseis created"
+                  "value": "ellipseis created"
                 }
               ],
               "status": "PASSED",
-              "durationInNanos": 90111500
+              "durationInNanos": 21570200
             },
             {
-              "name": "ellipse on canvas",
+              "name": "ellipse is on canvas",
               "words": [
                 {
                   "value": "Then",
                   "isIntroWord": true
                 },
                 {
-                  "value": "ellipse on canvas"
+                  "value": "ellipse is on canvas"
                 }
               ],
               "status": "PASSED",
-              "durationInNanos": 36400500
+              "durationInNanos": 7268500
             }
           ],
           "explicitArguments": [],
           "derivedArguments": [],
           "status": "SUCCESS",
-          "durationInNanos": 610883100
+          "durationInNanos": 465840400
         }
       ],
-      "durationInNanos": 610883100,
+      "durationInNanos": 465840400,
       "executionStatus": "SUCCESS"
     }
   ],
