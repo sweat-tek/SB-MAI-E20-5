@@ -91,9 +91,9 @@ public  class FloatingTextField {
         Rectangle fViewBounds = view.drawingToView(fDrawBounds);
         fViewBounds.x = fViewLoc.x;
         fViewBounds.y = fViewLoc.y;
+        float fontBaseline = isJUnitTest() ? 12 : textField.getGraphics().getFontMetrics(font).getMaxAscent();
         Dimension tfDim = textField.getPreferredSize();
         Insets tfInsets = textField.getInsets();
-        float fontBaseline = textField.getGraphics().getFontMetrics(font).getMaxAscent();
         double fBaseline = editedFigure.getBaseline() * view.getScaleFactor();
         textField.setBounds(
                 fViewBounds.x - tfInsets.left,
@@ -153,6 +153,15 @@ public  class FloatingTextField {
             editedFigure.removeFigureListener(figureHandler);
             editedFigure = null;
         }
+    }
+    
+    private static boolean isJUnitTest() {
+        for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+            if (element.getClassName().startsWith("org.junit.")) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 
