@@ -55,10 +55,10 @@ public class SVGEllipseFigureTest
         ellipseClone = ellipseFigure.clone();
 
         //Asserts that the dimensions of the two objects are the same
-        assertTrue(ellipseClone.getHeight() == ellipseFigure.getHeight());
-        assertTrue(ellipseClone.getWidth() == ellipseFigure.getWidth());
+        assertEquals(ellipseClone.getWidth(), ellipseFigure.getWidth(), 0);
+        assertEquals(ellipseClone.getHeight(), ellipseFigure.getHeight(), 0);
         //Asserts that the objects are not the same
-        assertTrue(ellipseClone != ellipseFigure);
+        assertNotSame(ellipseClone, ellipseFigure);
     }
 
 }

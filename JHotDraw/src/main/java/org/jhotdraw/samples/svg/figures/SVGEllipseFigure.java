@@ -218,6 +218,7 @@ public class SVGEllipseFigure extends SVGAttributedFigure implements SVGFigure {
 
     public Connector findCompatibleConnector(Connector c, boolean isStartConnector) {
         return null; // SVG does not support connectors
+
     }
     // COMPOSITE FIGURES
     // CLONING
