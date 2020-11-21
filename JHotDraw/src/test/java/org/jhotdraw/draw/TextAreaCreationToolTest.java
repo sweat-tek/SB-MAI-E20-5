@@ -54,20 +54,9 @@ public class TextAreaCreationToolTest {
     public void tearDown() {
     }
 
-    /**
-     * Test of draw method, of class TextAreaCreationTool.
-     */
-    @Test
-    public void testDraw() {
-        TextAreaCreationTool instance = new TextAreaCreationTool(proto);
-        Assert.assertNull(CreatedFigure);
-        Assert.assertNull(rubberbandColor);
-        instance.draw(g);
-    }
 
-    /**
-     * Test of beginEdit method, of class TextAreaCreationTool.
-     */
+    //Test beginEdit
+    
     @Test
     public void testBeginEdit() {
        TextHolderFigure textHolder = new SVGTextAreaFigure("Test placeholder text");
@@ -79,9 +68,19 @@ public class TextAreaCreationToolTest {
         
         instance.beginEdit(textHolder);
         Component component = view.getComponent(0);
-        
+
         assertEquals(textHolder.getText(), ((JTextField)component).getText());
 
+    }
+    
+    // Test draw
+     
+    @Test
+    public void testDraw() {
+        TextAreaCreationTool instance = new TextAreaCreationTool(proto);
+        Assert.assertNull(CreatedFigure);
+        Assert.assertNull(rubberbandColor);
+        instance.draw(g);
     }
     
    
