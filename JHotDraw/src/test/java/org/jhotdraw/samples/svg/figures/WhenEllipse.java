@@ -13,6 +13,7 @@ public class WhenEllipse extends Stage<WhenEllipse>
 
     WhenEllipse ellipseisCreated(){
         ellipse = new SVGEllipseFigure(2, 3, 4, 5);
+        editor.getActiveView().getDrawing().add(ellipse);
         return this;
     }
 }

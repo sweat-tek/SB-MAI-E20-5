@@ -26,7 +26,7 @@
                 }
               ],
               "status": "PASSED",
-              "durationInNanos": 9743100
+              "durationInNanos": 7111600
             },
             {
               "name": "ellipseis created",
@@ -40,7 +40,7 @@
                 }
               ],
               "status": "PASSED",
-              "durationInNanos": 21570200
+              "durationInNanos": 34196100
             },
             {
               "name": "ellipse is on canvas",
@@ -54,16 +54,16 @@
                 }
               ],
               "status": "PASSED",
-              "durationInNanos": 7268500
+              "durationInNanos": 1610000
             }
           ],
           "explicitArguments": [],
           "derivedArguments": [],
           "status": "SUCCESS",
-          "durationInNanos": 465840400
+          "durationInNanos": 432452200
         }
       ],
-      "durationInNanos": 465840400,
+      "durationInNanos": 432452200,
       "executionStatus": "SUCCESS"
     }
   ],

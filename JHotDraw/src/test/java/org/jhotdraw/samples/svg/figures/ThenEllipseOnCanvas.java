@@ -13,7 +13,6 @@ public class ThenEllipseOnCanvas extends Stage<ThenEllipseOnCanvas>
     private Figure ellipse;
 
     ThenEllipseOnCanvas ellipseIsOnCanvas(){
-        editor.getActiveView().getDrawing().add(ellipse);
         assertTrue(editor.getActiveView().getDrawing().getChild(0) == ellipse);
         return this;
     }
