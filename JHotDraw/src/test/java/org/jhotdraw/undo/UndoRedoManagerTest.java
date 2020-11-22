@@ -13,6 +13,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
 import org.jhotdraw.util.ResourceBundleUtil;
 import org.junit.Test;
+import com.tngtech.jgiven.Stage;
 
 /**
  *
@@ -45,5 +46,9 @@ public class UndoRedoManagerTest {
         instance.undoOrRedo();
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
-    } 
+    }
+
 }
+
+
+
