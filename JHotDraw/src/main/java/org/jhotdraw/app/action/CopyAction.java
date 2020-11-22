@@ -38,12 +38,16 @@ public class CopyAction extends AbstractAction {
         ResourceBundleUtil labels = ResourceBundleUtil.getBundle("org.jhotdraw.app.Labels");
         labels.configureAction(this, ID);
     }
-
+    public Component getFocusowner() {
+        Component focusOwner = KeyboardFocusManager.
+        getCurrentKeyboardFocusManager().
+        getPermanentFocusOwner();
+        return focusOwner;
+    }
+    
     @FeatureEntryPoint(JHotDrawFeatures.BASIC_EDITING)
    public void actionPerformed(ActionEvent evt) {
-        Component focusOwner = KeyboardFocusManager.
-                getCurrentKeyboardFocusManager().
-                getPermanentFocusOwner();
+        Component focusOwner = getFocusowner();
         if (focusOwner != null && focusOwner instanceof JComponent) {
             JComponent component = (JComponent) focusOwner;
             component.getTransferHandler().exportToClipboard(
@@ -52,5 +56,7 @@ public class CopyAction extends AbstractAction {
                     TransferHandler.COPY
                     );
         }
+        
+       
     }
 }

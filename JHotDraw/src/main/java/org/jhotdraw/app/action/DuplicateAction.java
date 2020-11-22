@@ -39,12 +39,16 @@ public class DuplicateAction extends AbstractAction {
         ResourceBundleUtil labels = ResourceBundleUtil.getBundle("org.jhotdraw.app.Labels");
         labels.configureAction(this, ID);
     }
-
-    @FeatureEntryPoint(JHotDrawFeatures.BASIC_EDITING)
-    public void actionPerformed(ActionEvent evt) {
-        Component focusOwner = KeyboardFocusManager.
+      private Component getFocusowner() {
+                Component focusOwner = KeyboardFocusManager.
                 getCurrentKeyboardFocusManager().
                 getPermanentFocusOwner();
+                return focusOwner;
+    }
+    
+    @FeatureEntryPoint(JHotDrawFeatures.BASIC_EDITING)
+    public void actionPerformed(ActionEvent evt) {
+        Component focusOwner = getFocusowner();
         if (focusOwner != null) {
             if (focusOwner instanceof EditableComponent) {
                 ((EditableComponent) focusOwner).duplicate();
