@@ -30,10 +30,10 @@ import static org.jhotdraw.samples.svg.SVGAttributeKeys.*;
 
 /**
  * JSVGDrawingAppletPanel.
- * 
+ *
  * @author Werner Randelshofer
- * @version 1.1 2008-03-26 Tweaked toolbar area. 
- * <br>1.0 11. March 2004  Created.
+ * @version 1.1 2008-03-26 Tweaked toolbar area.
+ * <br>1.0 11. March 2004 Created.
  */
 public class SVGDrawingPanel extends JPanel {
 
@@ -60,7 +60,9 @@ public class SVGDrawingPanel extends JPanel {
         }
     }
 
-    /** Creates new instance. */
+    /**
+     * Creates new instance.
+     */
     @FeatureEntryPoint(JHotDrawFeatures.CANVAS)
     public SVGDrawingPanel() {
         labels = ResourceBundleUtil.getBundle("org.jhotdraw.samples.svg.Labels");
@@ -100,45 +102,42 @@ public class SVGDrawingPanel extends JPanel {
         }
         });
          */
-        
         // Sort the toolbars according to the user preferences
-        ArrayList<JToolBar> sortme = new ArrayList<JToolBar>();
-        for (Component c : toolsPane.getComponents()) {
-            if (c instanceof JToolBar) {
-            sortme.add((JToolBar) c);
-                    }
-        }
-        Collections.sort(sortme, new Comparator<JToolBar>() {
-            public int compare(JToolBar tb1, JToolBar tb2) {
-                int i1 = prefs.getInt("toolBarIndex." + tb1.getName(), 0);
-                int i2 = prefs.getInt("toolBarIndex." + tb2.getName(), 0);
-                return i1 - i2;
-            }
-        });
+        ArrayList<JToolBar> sortme = sort();
+
+        //Collections.sort(sortme, new Comparator12(prefs));
+        Collections.sort(sortme,comparetor());
         toolsPane.removeAll();
         for (JToolBar tb : sortme) {
             toolsPane.add(tb);
         }
 
-        toolsPane.addContainerListener(new ContainerListener() {
-
-            public void componentAdded(ContainerEvent e) {
-                int i = 0;
-                for (Component c : toolsPane.getComponents()) {
-                    if (c instanceof JToolBar) {
-                        JToolBar tb = (JToolBar) c;
-                        prefs.putInt("toolBarIndex." + tb.getName(), i);
-                        i++;
-                    }
-                }
-            }
-
-            public void componentRemoved(ContainerEvent e) {
-            }
-        });
+        toolsPane.addContainerListener(new Container(toolsPane, prefs));
     }
 
-    public void setDrawing(Drawing d) {
+    private ArrayList<JToolBar> sort() {
+        ArrayList<JToolBar> sortme = new ArrayList<JToolBar>();
+        for (Component c : toolsPane.getComponents()) {
+            if (c instanceof JToolBar) {
+                sortme.add((JToolBar) c);
+            }
+        }
+        return sortme;
+    }
+
+    private Comparator<JToolBar> comparetor() {
+        Comparator<JToolBar> c = new Comparator<JToolBar>() {
+            public int compare(JToolBar tb1, JToolBar tb2) {
+                int i1 = prefs.getInt("toolBarIndex." + tb1.getName(), 0);
+                int i2 = prefs.getInt("toolBarIndex." + tb2.getName(), 0);
+                return i1 - i2;
+            }
+        };
+         return c;
+    }
+
+
+public void setDrawing(Drawing d) {
         undoManager.discardAllEdits();
         view.getDrawing().removeUndoableEditListener(undoManager);
         view.setDrawing(d);
