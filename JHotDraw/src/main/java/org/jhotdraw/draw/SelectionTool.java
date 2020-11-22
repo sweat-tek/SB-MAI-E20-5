@@ -121,31 +121,31 @@ public class SelectionTool extends AbstractTool
     }
 
     public void keyPressed(KeyEvent e) {
-        if (getView() != null && getView().isEnabled()) {
+        if (IsSelectedBehindWithInput(getView() != null, getView().isEnabled())) {
             tracker.keyPressed(e);
         }
     }
 
     public void keyReleased(KeyEvent evt) {
-        if (getView() != null && getView().isEnabled()) {
+        if (IsSelectedBehindWithInput(getView() != null, getView().isEnabled())) {
             tracker.keyReleased(evt);
         }
     }
 
     public void keyTyped(KeyEvent evt) {
-        if (getView() != null && getView().isEnabled()) {
+        if (IsSelectedBehindWithInput(getView() != null, getView().isEnabled())) {
             tracker.keyTyped(evt);
         }
     }
 
     public void mouseClicked(MouseEvent evt) {
-        if (getView() != null && getView().isEnabled()) {
+        if (IsSelectedBehindWithInput(getView() != null, getView().isEnabled())) {
             tracker.mouseClicked(evt);
         }
     }
 
     public void mouseDragged(MouseEvent evt) {
-        if (getView() != null && getView().isEnabled()) {
+        if (IsSelectedBehindWithInput(getView() != null, getView().isEnabled())) {
             tracker.mouseDragged(evt);
         }
     }
@@ -167,7 +167,7 @@ public class SelectionTool extends AbstractTool
 
     @Override
     public void mouseReleased(MouseEvent evt) {
-        if (getView() != null && getView().isEnabled()) {
+        if (IsSelectedBehindWithInput(getView() != null, getView().isEnabled())) {
             tracker.mouseReleased(evt);
         }
     }
@@ -177,9 +177,13 @@ public class SelectionTool extends AbstractTool
         tracker.draw(g);
     }
 
+
+
+
+
     @Override
     public void mousePressed(MouseEvent evt) {
-        if (getView() != null && getView().isEnabled()) {
+        if (IsSelectedBehindWithInput(getView() != null, getView().isEnabled())) {
             super.mousePressed(evt);
             DrawingView view = getView();
             Handle handle = view.findHandle(anchor);
@@ -190,18 +194,16 @@ public class SelectionTool extends AbstractTool
                 Figure figure;
                 Drawing drawing = view.getDrawing();
                 Point2D.Double p = view.viewToDrawing(anchor);
-                if (isSelectBehindEnabled() &&
-                        (evt.getModifiersEx() &
-                        (InputEvent.ALT_DOWN_MASK | InputEvent.CTRL_DOWN_MASK)) != 0) {
+                if (IsSelectedBehindWithInput(isSelectBehindEnabled(), (evt.getModifiersEx() &
+                        (InputEvent.ALT_DOWN_MASK | InputEvent.CTRL_DOWN_MASK)) != 0)) {
                     // Select a figure behind the current selection
                     figure = view.findFigure(anchor);
-                    while (figure != null && !figure.isSelectable()) {
+                    while (IsSelectedBehindWithInput(figure != null, !figure.isSelectable())) {
                         figure = drawing.findFigureBehind(p, figure);
                     }
                     HashSet<Figure> ignoredFigures = new HashSet<Figure>(view.getSelectedFigures());
                     ignoredFigures.add(figure);
-                    Figure figureBehind = view.getDrawing().findFigureBehind(
-                            view.viewToDrawing(anchor), ignoredFigures);
+                    Figure figureBehind = getFigureBehind(view, ignoredFigures);
                     if (figureBehind != null) {
                         figure = figureBehind;
                     }
@@ -209,7 +211,6 @@ public class SelectionTool extends AbstractTool
                     // Note: The search sequence used here, must be
                     // consistent with the search sequence used by the
                     // DefaultHandleTracker, the DefaultSelectAreaTracker and DelegationSelectionTool.
-
                     // If possible, continue to work with the current selection
                     figure = null;
                     if (isSelectBehindEnabled()) {
@@ -224,13 +225,12 @@ public class SelectionTool extends AbstractTool
                     // search for a figure in the drawing.
                     if (figure == null) {
                         figure = view.findFigure(anchor);
-                        while (figure != null && !figure.isSelectable()) {
+                        while (IsSelectedBehindWithInput(figure != null, !figure.isSelectable())) {
                             figure = drawing.findFigureBehind(p, figure);
                         }
                     }
                 }
-
-                if (figure != null && figure.isSelectable()) {
+                if (IsSelectedBehindWithInput(figure != null, figure.isSelectable())) {
                     newTracker = getDragTracker(figure);
                 } else {
                     if (!evt.isShiftDown()) {
@@ -246,6 +246,13 @@ public class SelectionTool extends AbstractTool
             }
             tracker.mousePressed(evt);
         }
+    }
+
+    private boolean IsSelectedBehindWithInput(boolean selectBehindEnabled, boolean b) {return selectBehindEnabled &&  b;}
+
+    private Figure getFigureBehind(DrawingView view, HashSet<Figure> ignoredFigures) {
+        return view.getDrawing().findFigureBehind(
+                view.viewToDrawing(anchor), ignoredFigures);
     }
 
     protected void setTracker(Tool newTracker) {
