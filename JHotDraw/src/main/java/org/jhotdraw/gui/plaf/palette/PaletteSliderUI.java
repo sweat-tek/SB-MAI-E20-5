@@ -153,21 +153,33 @@ public class PaletteSliderUI extends BasicSliderUI {
 
 	if ((!slider.getPaintTicks() && paintThumbArrowShape == null) ||
 	    paintThumbArrowShape == Boolean.FALSE) {
+            drawPlainSlider(g, w, h, stops, stopColors);
+        }
+        else if ( slider.getOrientation() == JSlider.HORIZONTAL ) {
+            drawHorizontalSlider(g, w, h);
+        }
+        else {  // vertical
+            drawVerticalSlider(g, w, h);
+        }
 
-	    // "plain" version
-            
-                        LinearGradientPaint lgp = new LinearGradientPaint(
-                                new Point2D.Float(2, 2), new Point2D.Float(2, 2+h-4),
-                                stops, stopColors,
-                                MultipleGradientPaint.REPEAT,
-                                MultipleGradientPaint.LINEAR_RGB);
-                        g.setPaint(lgp);
+        g.translate(-knobBounds.x, -knobBounds.y);
+    }
+    
+    private void drawPlainSlider(Graphics2D g, int w, int h, float[] stops, Color[] stopColors){
+        // "plain" version 
+            LinearGradientPaint lgp = new LinearGradientPaint(
+            new Point2D.Float(2, 2), new Point2D.Float(2, 2+h-4),
+                stops, stopColors,
+                MultipleGradientPaint.REPEAT,
+                MultipleGradientPaint.LINEAR_RGB);
+            g.setPaint(lgp);
             g.fillOval(2,2,w - 4,h - 4);
             g.setColor(new Color(0x444444));
             g.drawOval(1,1,w - 3,h - 3);
-        }
-        else if ( slider.getOrientation() == JSlider.HORIZONTAL ) {
-            int cw = w / 2;
+    }
+    
+    private void drawHorizontalSlider(Graphics2D g, int w, int h){
+        int cw = w / 2;
             g.fillRect(1, 1, w-3, h-1-cw);
             Polygon p = new Polygon();
             p.addPoint(1, h-cw);
@@ -187,9 +199,10 @@ public class PaletteSliderUI extends BasicSliderUI {
             g.setColor(getShadowColor());
             g.drawLine(w-2, 1, w-2, h-2-cw);    
             g.drawLine(w-2, h-1-cw, w-1-cw, h-2);       
-        }
-        else {  // vertical
-            int cw = h / 2;
+    }
+    
+    private void drawVerticalSlider(Graphics2D g, int w, int h){
+        int cw = h / 2;
 	    if(slider.getComponentOrientation().isLeftToRight()) {
 		  g.fillRect(1, 1, w-1-cw, h-3);
 	          Polygon p = new Polygon();
@@ -231,10 +244,9 @@ public class PaletteSliderUI extends BasicSliderUI {
                   g.drawLine(cw, h-2, w-2,  h-2 );         // bottom
                   g.drawLine(w-1, 1, w-1,  h-2 );          // right
 	    }
-        }
-
-        g.translate(-knobBounds.x, -knobBounds.y);
     }
+    
+    
     @Override
     protected Dimension getThumbSize() {
         Dimension size = new Dimension();

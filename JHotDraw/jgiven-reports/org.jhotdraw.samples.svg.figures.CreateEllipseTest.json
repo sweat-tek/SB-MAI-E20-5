@@ -1,0 +1,71 @@
+{
+  "className": "org.jhotdraw.samples.svg.figures.CreateEllipseTest",
+  "name": "Create Ellipse",
+  "scenarios": [
+    {
+      "className": "org.jhotdraw.samples.svg.figures.CreateEllipseTest",
+      "testMethodName": "ellipseDrawingTest",
+      "description": "Ellipse drawing test",
+      "tagIds": [],
+      "explicitParameters": [],
+      "derivedParameters": [],
+      "casesAsTable": false,
+      "scenarioCases": [
+        {
+          "caseNr": 1,
+          "steps": [
+            {
+              "name": "canvas is empty",
+              "words": [
+                {
+                  "value": "Given",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "canvas is empty"
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 7111600
+            },
+            {
+              "name": "ellipseis created",
+              "words": [
+                {
+                  "value": "When",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "ellipseis created"
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 34196100
+            },
+            {
+              "name": "ellipse is on canvas",
+              "words": [
+                {
+                  "value": "Then",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "ellipse is on canvas"
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 1610000
+            }
+          ],
+          "explicitArguments": [],
+          "derivedArguments": [],
+          "status": "SUCCESS",
+          "durationInNanos": 432452200
+        }
+      ],
+      "durationInNanos": 432452200,
+      "executionStatus": "SUCCESS"
+    }
+  ],
+  "tagMap": {}
+}

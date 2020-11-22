@@ -1,3 +1,4 @@
+
 JHotDraw/target/
 /JHotDraw/nbactions.xml
 .idea/
@@ -5,4 +6,5 @@ JHotDraw/target/
 out/
 JHotDraw/FeatureTraces/
 JHotDraw/.ij/
+JHotDraw/jgiven-reports/
 /JHotDraw/nbproject/
