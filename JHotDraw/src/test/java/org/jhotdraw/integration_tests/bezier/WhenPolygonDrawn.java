@@ -20,13 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class WhenPolygonDrawn extends Stage<WhenPolygonDrawn> {
     @ExpectedScenarioState
-    Point2D.Double p1;
-    @ExpectedScenarioState
-    Point2D.Double p2;
-    @ExpectedScenarioState
-    Point2D.Double p3;
-    @ExpectedScenarioState
-    Point2D.Double p4;
+    Point2D.Double[] fourPointPolygonCoordinates;
 
     @ProvidedScenarioState
     BezierPath figure = new BezierPath();
@@ -35,14 +29,10 @@ public class WhenPolygonDrawn extends Stage<WhenPolygonDrawn> {
         //Ensure that the constructor for BezierPath does not return null
         assertThat(figure).isNotNull();
         //Add points
-        List<Point2D.Double> listOfPoints = new ArrayList<>();
-        listOfPoints.add(p1);
-        listOfPoints.add(p2);
-        listOfPoints.add(p3);
-        listOfPoints.add(p4);
-        for (Point2D.Double point : listOfPoints) {
-            figure.addPoint(point.getX(), point.getY());
+        for (int i = 0; i < 4; i++){
+            figure.addPoint(fourPointPolygonCoordinates[i].getX(), fourPointPolygonCoordinates[i].getY());
         }
+        assertThat(figure.size()).isNotZero();
         figure.setClosed(true);
         return this;
     }
