@@ -97,7 +97,7 @@ public class SVGApplicationModel extends DefaultApplicationModel {
         a.add(new SplitAction(editor));
 
         a.add(null); // separator
-        a.add(new BringToFrontAction(editor));
+        a.add(new SendToFrontAction(editor));
         a.add(new SendToBackAction(editor));
 
         return a;
